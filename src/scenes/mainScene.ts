@@ -8,6 +8,8 @@ export default class MainScene extends Phaser.Scene {
     private _logo: Phaser.GameObjects.Image;
     private _starknetInteractButton: Phaser.GameObjects.Image;
     private _starknetInteractButtonText: Phaser.GameObjects.Text;
+    private _connectButton: Phaser.GameObjects.Image;
+    private _connectButtonText: Phaser.GameObjects.Text;
     private _disconnectButton: Phaser.GameObjects.Image;
     private _disconnectButtonText: Phaser.GameObjects.Text;
     private _welcomeText: Phaser.GameObjects.Text;
@@ -31,6 +33,7 @@ export default class MainScene extends Phaser.Scene {
     set starknetInteractButtonText(value: Phaser.GameObjects.Text) {
         this._starknetInteractButtonText = value;
     }
+
     get starknetInteractButton(): Phaser.GameObjects.Image {
         return this._starknetInteractButton;
     }
@@ -38,12 +41,29 @@ export default class MainScene extends Phaser.Scene {
     set starknetInteractButton(value: Phaser.GameObjects.Image) {
         this._starknetInteractButton = value;
     }
+
     get logo(): Phaser.GameObjects.Image {
         return this._logo;
     }
 
     set logo(value: Phaser.GameObjects.Image) {
         this._logo = value;
+    }
+
+    get connectButtonText(): Phaser.GameObjects.Text {
+        return this._connectButtonText;
+    }
+
+    set connectButtonText(value: Phaser.GameObjects.Text) {
+        this._connectButtonText = value;
+    }
+
+    get connectButton(): Phaser.GameObjects.Image {
+        return this._connectButton;
+    }
+
+    set connectButton(value: Phaser.GameObjects.Image) {
+        this._connectButton = value;
     }
 
     get disconnectButtonText(): Phaser.GameObjects.Text {
@@ -53,6 +73,7 @@ export default class MainScene extends Phaser.Scene {
     set disconnectButtonText(value: Phaser.GameObjects.Text) {
         this._disconnectButtonText = value;
     }
+
     get disconnectButton(): Phaser.GameObjects.Image {
         return this._disconnectButton;
     }
@@ -77,6 +98,7 @@ export default class MainScene extends Phaser.Scene {
     update() {
         if(starknet) {
             this.disconnectButtonText.setText('Disconnect Wallet');
+            console.log(starknet);
             this.welcomeText.setText('Welcome ' + truncateString(starknet.selectedAddress, 12) + ' to the Phaser-Starknet-Boilerplate!');
         } else {
             this.disconnectButtonText.setText('No Wallet Connected');
@@ -87,6 +109,11 @@ export default class MainScene extends Phaser.Scene {
     checkStarknetStatus() {
         starknetConnect({modalMode: 'neverAsk'}).then((starknetWindow: StarknetWindowObject) => {
             console.log(starknetWindow);
+            if (starknetWindow.selectedAddress) {
+                this.enableInteractButton();
+            } else {
+                this.disableInteractButton();
+            }
         });
     }
 
@@ -95,6 +122,7 @@ export default class MainScene extends Phaser.Scene {
         this.renderLogo();
         this.renderWelcomeText();
         this.renderStarknetInteractButton();
+        this.renderStarknetConnectButton();
         this.renderStarknetDisconnectButton();
     }
 
@@ -116,6 +144,16 @@ export default class MainScene extends Phaser.Scene {
         }).setOrigin(0.5, 0.5);
     }
 
+    enableInteractButton() {
+        this.starknetInteractButton.setInteractive();
+        this.starknetInteractButton.clearTint();
+    }
+
+    disableInteractButton() {
+        this.starknetInteractButton.disableInteractive();
+        this.starknetInteractButton.setTint(0x808080);
+    }
+
     renderStarknetInteractButton() {
         //button Starknet Interactions
         this.starknetInteractButton = this.add.image((config.width / 4), config.height - 100, 'button').setScale(scaleFactor);
@@ -125,7 +163,6 @@ export default class MainScene extends Phaser.Scene {
             color: '#000000',
             wordWrap: {width: this.starknetInteractButton.width - 2 * buttonPadding}
         }).setOrigin(0.5, 0.5);
-        this.starknetInteractButton.setInteractive();
         this.starknetInteractButton.on('pointerover', () => {
             this.starknetInteractButtonText.setColor('#FFFFFF');
         });
@@ -148,9 +185,39 @@ export default class MainScene extends Phaser.Scene {
         });
     }
 
+    renderStarknetConnectButton() {
+        //button Starknet Connect
+        this.connectButton = this.add.image((config.width / 4 * 2), config.height - 100, 'button').setScale(scaleFactor);
+        let buttonPadding = 5;
+        this.connectButtonText = this.add.text(this.connectButton.x, this.connectButton.y, 'Connect Wallet', {
+            fontSize: scaleFactor * 20 + 'px',
+            color: '#000000',
+            wordWrap: {width: this.connectButton.width - 2 * buttonPadding}
+        }).setOrigin(0.5, 0.5);
+        this.connectButton.setInteractive();
+        this.connectButton.on('pointerover', () => {
+            this.connectButtonText.setColor('#FFFFFF');
+        });
+        this.connectButton.on('pointerout', () => {
+            this.connectButtonText.setColor('#000000');
+        });
+        this.connectButton.on('pointerdown', () => {
+            this.connectButton.setTint(0xFF4F0B);
+            this.connectButton.disableInteractive();
+            starknetConnect().then((starknetWindow: StarknetWindowObject) => {
+                console.log(starknetWindow);
+                setTimeout(() => {
+                    this.connectButton.clearTint();
+                }, 100);
+                this.connectButton.setInteractive();
+                this.enableInteractButton();
+            });
+        });
+    }
+
     renderStarknetDisconnectButton() {
         //button Starknet Disconnect
-        this.disconnectButton = this.add.image((config.width / 4 * 2), config.height - 100, 'button').setScale(scaleFactor);
+        this.disconnectButton = this.add.image((config.width / 4 * 3), config.height - 100, 'button').setScale(scaleFactor);
         let buttonPadding = 5;
         this.disconnectButtonText = this.add.text(this.disconnectButton.x, this.disconnectButton.y, 'No Wallet Connected', {
             fontSize: scaleFactor * 20 + 'px',
@@ -170,9 +237,9 @@ export default class MainScene extends Phaser.Scene {
                 console.log(starknetWindow);
                 setTimeout(() => {
                     this.disconnectButton.clearTint();
+                    this.disableInteractButton();
                 }, 100);
             });
         });
-
     }
 }

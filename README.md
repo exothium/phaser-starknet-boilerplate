@@ -79,7 +79,7 @@ We will add Hardhat to the project to make it easier to deploy the contracts.
 
 ## Contributing
 Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-Please read our [contributing guidelines](
+Please read our [contributing guidelines](https://github.com/exothium/phaser-starknet-boilerplate/blob/main/docs/CONTRIBUTING.md)
 
 ## Contributors
 + [Angelo Bastos](https://github.com/Metronomy)
