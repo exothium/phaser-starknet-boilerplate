@@ -20,13 +20,15 @@ Phaser is a popular open-source framework for building HTML5 games and has some 
 
 **Flexibility**: Phaser is designed to be highly customizable, allowing developers to easily modify or extend the engine to meet their specific needs.
 
-Other open-srouce frameworks to build HTML5 games include:
+Other open-source frameworks to build HTML5 games include:
 - PixiJS
 - BabylonJS
 - Three.js
 - MelonJS
+- Godot
 
 The choice between these frameworks will depend on the specific requirements of the project. For example, if a developer is looking to build a 2D game, Phaser or MelonJS may be the best choice. If a developer is looking to build a 3D game or experience, BabylonJS or Three.js may be a better choice.
+On the other hand, if a developer is looking to build a game that requires a lot of customization and if he is also familiar with Python (since uses its own scripting language, GDScript, which is based on Python), then Godot may be a better choice.
 
 
 ## What you will get?
