@@ -8,7 +8,7 @@ assignees: ""
 
 # Bug Report
 
-**Kakarot version:**
+**Phaser-Starknet-Boilerplate version:**
 
 <!-- Please specify commit or tag version. -->
 
