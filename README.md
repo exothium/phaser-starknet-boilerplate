@@ -1,3 +1,5 @@
+![plot](https://github.com/exothium/phaser-starknet-boilerplate//blob/8eaf4817575a377255a72bd2d06a2a88f567175f/src/assets/phaser-starknet-logo.png?raw=true)
+
 # Phaser-Starknet-Boilerplate
 
 The project main goal is to create a structure of components using starknet calls. It's a tool to give any phaser developer the possibility to quickly bootstrap a game without the need to deal with all the difficulties to interact with starknet.
@@ -31,7 +33,7 @@ The choice between these frameworks will depend on the specific requirements of 
 
 | The entire interface:                      | Deploy contracts using HardHat Plugin |
 |------------------------------------------------|---------------------------------------|
-| ![plot](./src/assets/demos/phaser-starknet.gif) | Coming Soon                           |
+| ![plot](https://github.com/exothium/phaser-starknet-boilerplate//blob/8eaf4817575a377255a72bd2d06a2a88f567175f/src/assets/demos/phaser-starknet.gif?raw=true) | Coming Soon                           |
 
 ---
 
