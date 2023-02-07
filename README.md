@@ -43,6 +43,7 @@ On the other hand, if a developer is looking to build a game that requires a lot
 + TypeScript
 + Phaser 3 
 + get-starknet
++ hardhat
 
 ---
 
