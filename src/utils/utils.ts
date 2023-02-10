@@ -12,3 +12,25 @@ export function truncateString(fullStr, strLen, separator?) {
         separator +
         fullStr.substr(fullStr.length - backChars);
 }
+
+export function getViewFunctionsFromAbi(abi) {
+    let views = [];
+    abi.forEach((item) => {
+        if (item.type === 'function' && item.stateMutability === 'view') {
+            views.push(item);
+        }
+    });
+    return views;
+}
+
+export function getWriteFunctionsFromAbi(abi) {
+    let functions = [];
+    abi.forEach((item) => {
+        if (item.type === 'function' && item.stateMutability !== 'view') {
+            functions.push(item);
+        }
+    });
+    return functions;
+}
+
+
