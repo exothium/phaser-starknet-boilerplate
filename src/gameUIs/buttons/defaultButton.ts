@@ -24,6 +24,8 @@ export default class DefaultButton extends Label {
 
         let displayText = scene.add.text(x, y, text, {
             fontSize: textSize + 'px',
+            fontFamily: 'MRegular',
+            color: '#ffdead',
         }).setOrigin(0.5).setDepth(10);
 
         let background = (scene.add as any).rexRoundRectangle({
@@ -31,10 +33,10 @@ export default class DefaultButton extends Label {
             y: y,
             width: width,
             height: textSize*2,
-            color: 0x28286E,
+            color: 0x121212,
             radius: 10,
             strokeColor: 0xF34C0B,
-            strokeWidth: 2,
+            strokeWidth: 1,
         });
 
         super(scene, {
@@ -91,20 +93,26 @@ export default class DefaultButton extends Label {
     }
 
     handleOver() {
-        this.enabled && this._background.setFillStyle(0x28286E, 0.5);
+        if(this.enabled) {
+            this.background.setFillStyle(0x0e141b, 1);
+            this.displayText.setFontFamily('MBold');
+        }
     }
 
     handleOut() {
-        this.enabled && this._background.setFillStyle(0x28286E, 1);
+        if(this.enabled) {
+            this.background.setFillStyle(0x121212, 1);
+            this.displayText.setFontFamily('MRegular');
+        }
     }
 
     enable() {
         this.enabled = true;
-        this.background.setFillStyle(0x28286E, 1);
+        this.background.setFillStyle(0x121212, 1);
     }
 
     disable() {
         this.enabled = false;
-        this.background.setFillStyle(0x28286E, 0.5);
+        this.background.setFillStyle(0x121212, 0.5);
     }
 }

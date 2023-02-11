@@ -4,10 +4,10 @@ import {config} from "../game";
 import UIPlugins from "phaser3-rex-plugins/templates/ui/ui-plugin.js";
 import ScrollablePanel = UIPlugins.ScrollablePanel;
 import FixWidthSizer = UIPlugins.FixWidthSizer;
-import DefaultButton from "../gameUIs/defaultButton";
+import DefaultButton from "../gameUIs/buttons/defaultButton";
 
-export default class StarknetScene extends Phaser.Scene {
-    static readonly SCENE_KEY = 'STARKNET_SCENE'
+export default class StarknetInteractionsScene extends Phaser.Scene {
+    static readonly SCENE_KEY = 'STARKNET_INTERACTIONS_SCENE'
     rexUI: RexUIPlugin;
     private _panel: ScrollablePanel;
     private _paddingPercentage = 0.1;
@@ -17,7 +17,7 @@ export default class StarknetScene extends Phaser.Scene {
     private _fixWidthSizer: FixWidthSizer;
 
     constructor() {
-        super(StarknetScene.SCENE_KEY)
+        super(StarknetInteractionsScene.SCENE_KEY)
     }
 
     get panel(): UIPlugins.ScrollablePanel {

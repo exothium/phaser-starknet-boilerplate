@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <style media='screen' type='text/css'>
+    @font-face {
+      font-family: MRegular;
+      src: url('./assets/fonts/PPNeueMontreal-Book.otf');
+    }
+    @font-face {
+      font-family: MBold;
+      src: url('./assets/fonts/PPNeueMontreal-Bold.otf');
+    }
+  </style>
   <meta charset="UTF-8" />
   <meta
           name="viewport"
@@ -9,8 +19,6 @@
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
   <meta name="theme-color" content="#000000" />
-
-  <link rel="manifest" href="./manifest.json" />
 
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -22,18 +30,13 @@
   <title><%= htmlWebpackPlugin.options.gameName %></title>
 
   <noscript>Please enable javascript to continue using this application.</noscript>
-
-
-  <!-- installs the serviceWorker -->
-  <!-- <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-      })
-    }
-  </script> -->
+  <link rel="preload" as="font" href="assets/fonts/PPNeueMontreal-Bold.otf" type="font/otf">
+  <link rel="preload" as="font" href="assets/fonts/PPNeueMontreal-Book.otf" type="font/otf">
 </head>
 <body style="display: flex; justify-content: center; align-items: center; margin: 0px;">
 <div id="phaser-game"></div>
+<div style="font-family:MRegular; font-size: 30px; position:absolute; left:1px; visibility: hidden;">.</div>
+<div style="font-family:MBold; font-size: 30px; position:absolute; left:1px; visibility: hidden;">.</div>
+
 </body>
 </html>

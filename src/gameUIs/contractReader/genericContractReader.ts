@@ -1,7 +1,7 @@
 import Tabs from "phaser3-rex-plugins/templates/ui/tabs/Tabs";
 import RexUIPlugin from "phaser3-rex-plugins/templates/ui/ui-plugin";
 import {config} from "../../game";
-import DefaultButton from "../defaultButton";
+import DefaultButton from "../buttons/defaultButton";
 import UIPlugins from "phaser3-rex-plugins/templates/ui/ui-plugin";
 import ScrollablePanel = UIPlugins.ScrollablePanel;
 import {Contract} from "starknet";
@@ -54,18 +54,15 @@ export default class GenericContractReader extends Tabs {
                 height: containerHeight,
                 radius: 5,
                 color: 0x1F2937,
+                alpha: 1,
             }).setDepth(1);
             let text = scene.add.text(containerX, containerY - 25, viewFunctions[i].name, {
                 fontSize: '20px',
-                fill: '#9A6BCD',
+                fill: '#F34C0B',
             }).setDepth(2).setOrigin(0.5, 0.5);
 
             container.add(background);
             container.add(text);
-            //create a mask between container and background from backgrounScene
-            container.setMask(scene.get('BACKGROUND_SCENE').background.createGeometryMask());
-
-
 
 
             fixWidthSizer.add(container);

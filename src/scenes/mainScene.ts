@@ -2,7 +2,7 @@ import {starknet, starknetConnect, starknetDisconnect} from "../starknet-web3/st
 import {StarknetWindowObject} from "get-starknet";
 import {config, scaleFactor} from "../game";
 import {truncateString} from "../utils/utils";
-import DefaultButton from "../gameUIs/defaultButton";
+import DefaultButton from "../gameUIs/buttons/defaultButton";
 
 export default class MainScene extends Phaser.Scene {
     static readonly SCENE_KEY = 'MAIN_SCENE'
@@ -104,7 +104,8 @@ export default class MainScene extends Phaser.Scene {
         this.welcomeText = this.add.text((config.width / 2), config.height - 250, 'Welcome to the Phaser-Starknet-Boilerplate!', {
             fontSize: scaleFactor * 20 + 'px',
             color: '#ffffff',
-            wordWrap: {width: config.width - 2 * 10}
+            wordWrap: {width: config.width - 2 * 10},
+            fontFamily: 'MBold',
         }).setOrigin(0.5, 0.5);
     }
 
@@ -113,7 +114,7 @@ export default class MainScene extends Phaser.Scene {
         this.starknetInteractButton = this.add.existing(new DefaultButton(this, 'Starknet Interactions', ( config.width / 4), config.height - 100, (config.width / 4 - 10), 'large', () => {
             starknetConnect().then((starknetWindow: StarknetWindowObject) => {
                 if(starknetWindow) {
-                    this.scene.start('STARKNET_SCENE');
+                    this.scene.start('STARKNET_INTERACTIONS_SCENE');
                 }
             });
         }));
