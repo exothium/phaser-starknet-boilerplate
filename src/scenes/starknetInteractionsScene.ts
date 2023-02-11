@@ -80,9 +80,8 @@ export default class StarknetInteractionsScene extends Phaser.Scene {
         return this._fixWidthSizer;
     }
 
-    panelButton(text: string = 'TEXT NOT SET', onClick?: Function) {
+    panelButton(text: string = 'TEXT NOT SET', onClick?) {
         return this.add.existing(new DefaultButton(this, text, 0, 0, this._panelButtonWidth, 'medium', onClick));
-
     }
 
 

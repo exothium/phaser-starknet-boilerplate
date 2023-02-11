@@ -9,7 +9,8 @@ import {getViewFunctionsFromAbi, getWriteFunctionsFromAbi} from "../../utils/uti
 import ContainerLite from "phaser3-rex-plugins/plugins/gameobjects/container/containerlite/ContainerLite";
 
 export default class GenericContractReader extends Tabs {
-    rexUI: RexUIPlugin;
+    private _scene: Phaser.Scene;
+    private _rexUI: RexUIPlugin;
     private _scrollablePanel: ScrollablePanel;
     private _readButton: DefaultButton;
     private _writeButton: DefaultButton;
@@ -18,6 +19,43 @@ export default class GenericContractReader extends Tabs {
     private _writeFunctions: any;
 
     constructor(scene, x: number = 0, y: number = 0, width: number = 0, height: number = 0, padding: number = 0, contract: Contract) {
+        super(scene, {
+            x: x,
+            y: y,
+            width: width,
+            height: height,
+            topButtons: [],
+            background: (scene.add as any).rexRoundRectangle({
+                x: config.width / 2,
+                y: config.height / 2,
+                width: width,
+                height: height,
+                radius: 20,
+                color: 0x111926,
+                alpha: 0.75,
+                strokeColor: 0xF34C0B,
+                strokeWidth: 2,
+            }),
+            space: {
+                left: 10,
+                right: 10,
+                top: 10,
+                bottom: 10,
+            },
+        });
+
+        this._scene = scene;
+        this._rexUI = scene.rexUI;
+
+        this.readButton = new DefaultButton(scene, 'Read', (config.width / 2 - 105), (config.height * padding + 50), 200, 'medium');
+        this.writeButton = new DefaultButton(scene, 'Write', (config.width / 2 + 105), (config.height * padding + 50), 200, 'medium');
+        this.addTopButton(this.readButton);
+        this.addTopButton(this.writeButton);
+
+        this.constructFixWidthSizer(x, y);
+        this.constructScrollablePanel(x, y, width, height);
+
+
         let viewFunctions = getViewFunctionsFromAbi(contract.abi);
         let writeFunctions = getWriteFunctionsFromAbi(contract.abi);
 
@@ -26,20 +64,6 @@ export default class GenericContractReader extends Tabs {
         });*/
 
         console.log(viewFunctions);
-
-        let fixWidthSizer = scene.rexUI.add.fixWidthSizer({
-            x: x,
-            y: y,
-            space: {
-                left: 15,
-                right: 15,
-                top: 15,
-                bottom: 15,
-                item: 15,
-                line: 15,
-            },
-        });
-
         for (let i = 0; i < viewFunctions.length; i++) {
             let containerHeight = 75;
             let containerWidth = width - 100;
@@ -63,77 +87,16 @@ export default class GenericContractReader extends Tabs {
 
             container.add(background);
             container.add(text);
-
-
-            fixWidthSizer.add(container);
-            fixWidthSizer.addNewLine();
+            this.fixWidthSizer.add(container);
+            this.fixWidthSizer.addNewLine();
+            this.scrollablePanel.layout();
 
             /*contract[viewFunctions[i].name](starknet.selectedAddress).then((value) => {
                 console.log(value);
             });*/
         }
 
-        fixWidthSizer.layout();
 
-        /*fixWidthSizer.add(new DefaultButton(scene, 'Example', (config.width / 2 - 105), (config.height * padding + 50), 200, 'small'));
-        fixWidthSizer.add(new DefaultButton(scene, 'Example', (config.width / 2 - 105), (config.height * padding + 50), 200, 'small'));*/
-
-
-        let scrollablePanel = scene.rexUI.add.scrollablePanel({
-            x: (config.width / 2),
-            y: (config.height / 2) + (25 + 25 / 2),
-            width: width - 100,
-            height: height - 100,
-            scrollMode: 0,
-            background: (scene.add as any).rexRoundRectangle({
-                x: x,
-                y: y,
-                width: width,
-                height: height,
-                color: 0x111926,
-                alpha: 1,
-                radius: 5,
-            }),
-            panel: {
-                child: fixWidthSizer,
-            },
-        }).layout();
-        let readButton = new DefaultButton(scene, 'Read', (config.width / 2 - 105), (config.height * padding + 50), 200, 'medium');
-        let writeButton = new DefaultButton(scene, 'Write', (config.width / 2 + 105), (config.height * padding + 50), 200, 'medium');
-
-        super(scene, {
-            x: x,
-            y: y,
-            width: width,
-            height: height,
-            topButtons: [
-                readButton,
-                writeButton,
-            ],
-            background: (scene.add as any).rexRoundRectangle({
-                x: config.width / 2,
-                y: config.height / 2,
-                width: width,
-                height: height,
-                radius: 20,
-                color: 0x111926,
-                alpha: 0.75,
-                strokeColor: 0xF34C0B,
-                strokeWidth: 2,
-            }),
-            space: {
-                left: 10,
-                right: 10,
-                top: 10,
-                bottom: 10,
-            },
-            panel: scrollablePanel
-        });
-
-        this.fixWidthSizer = fixWidthSizer;
-        this.scrollablePanel = scrollablePanel;
-        this.readButton = readButton;
-        this.writeButton = writeButton;
 
         scene.add.existing(this);
     }
@@ -168,5 +131,42 @@ export default class GenericContractReader extends Tabs {
 
     set fixWidthSizer(value: UIPlugins.FixWidthSizer) {
         this._fixWidthSizer = value;
+    }
+
+    constructScrollablePanel(x: number = 0, y: number = 0, width: number = 0, height: number = 0) {
+        this.scrollablePanel = this._rexUI.add.scrollablePanel({
+            x: (config.width / 2),
+            y: (config.height / 2) + (25 + 25 / 2),
+            width: width - 100,
+            height: height - 100,
+            scrollMode: 0,
+            background: (this._scene.add as any).rexRoundRectangle({
+                x: x,
+                y: y,
+                width: width,
+                height: height,
+                color: 0x111926,
+                alpha: 1,
+                radius: 5,
+            }),
+            panel: {
+                child: this.fixWidthSizer,
+            },
+        }).layout();
+    }
+
+    constructFixWidthSizer(x, y) {
+        this.fixWidthSizer = this._rexUI.add.fixWidthSizer({
+            x: x,
+            y: y,
+            space: {
+                left: 15,
+                right: 15,
+                top: 15,
+                bottom: 15,
+                item: 15,
+                line: 15,
+            },
+        }).layout();
     }
 }

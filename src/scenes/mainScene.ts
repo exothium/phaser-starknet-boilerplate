@@ -1,4 +1,4 @@
-import {starknet, starknetConnect, starknetDisconnect} from "../starknet-web3/starknet";
+import {starknet, starknetConnect, starknetDisconnect} from "../starknet/starknet";
 import {StarknetWindowObject} from "get-starknet";
 import {config, scaleFactor} from "../game";
 import {truncateString} from "../utils/utils";

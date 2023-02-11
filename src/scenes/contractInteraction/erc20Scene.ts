@@ -1,7 +1,7 @@
 import {config} from "../../game";
 import RexUIPlugin from "phaser3-rex-plugins/templates/ui/ui-plugin";
-import erc20Mintable_abi from "../../starknet-web3/contracts/abis/erc20Mintable_abi.json";
-import {starknet} from "../../starknet-web3/starknet";
+import erc20Mintable_abi from "../../starknet/contracts/abis/erc20Mintable_abi.json";
+import {starknet} from "../../starknet/starknet";
 import {Contract} from "starknet";
 import GenericContractReadWriteTabs from "../../gameUIs/contractReader/genericContractReader";
 
@@ -12,7 +12,6 @@ export default class Erc20Scene extends Phaser.Scene {
     private _paddingPercentage = 0.1;
     private _panelWidth: number = config.width - (config.width * this._paddingPercentage * 2);
     private _panelHeight: number = config.height - (config.height * this._paddingPercentage * 2);
-
     private _erc20Contract: Contract;
 
     constructor() {
