@@ -96,8 +96,7 @@ export default class MainScene extends Phaser.Scene {
     }
 
     renderLogo() {
-        //logo
-        this.logo = this.add.image((config.width / 2), 628 / 2, 'logo').setScale(scaleFactor * 0.5);
+        this.logo = this.add.image((config.width / 2), config.height / 2, 'logo').setScale(scaleFactor * 0.5);
     }
 
     renderWelcomeText() {
@@ -110,7 +109,6 @@ export default class MainScene extends Phaser.Scene {
     }
 
     renderStarknetInteractButton() {
-        //button Starknet Interactions
         this.starknetInteractButton = this.add.existing(new DefaultButton(this, 'Starknet Interactions', ( config.width / 4), config.height - 100, (config.width / 4 - 10), 'large', () => {
             starknetConnect().then((starknetWindow: StarknetWindowObject) => {
                 if(starknetWindow) {
@@ -133,7 +131,6 @@ export default class MainScene extends Phaser.Scene {
     }
 
     renderStarknetDisconnectButton() {
-        //button Starknet Disconnect
         this.disconnectButton = this.add.existing(new DefaultButton(this, 'Disconnect Wallet', (config.width / 4 * 3), config.height - 100, (config.width / 4 - 10), 'large', () => {
             starknetDisconnect().then((starknetWindow: StarknetWindowObject) => {
                 if(!starknetWindow) {

@@ -7,6 +7,7 @@ import ScrollablePanel = UIPlugins.ScrollablePanel;
 import {Contract} from "starknet";
 import {getViewFunctionsFromAbi, getWriteFunctionsFromAbi} from "../../utils/utils";
 import ContainerLite from "phaser3-rex-plugins/plugins/gameobjects/container/containerlite/ContainerLite";
+import GenericFunctionReader from "./genericFunctionReader";
 
 export default class GenericContractReader extends Tabs {
     private _scene: Phaser.Scene;
@@ -52,7 +53,7 @@ export default class GenericContractReader extends Tabs {
         this.addTopButton(this.readButton);
         this.addTopButton(this.writeButton);
 
-        this.constructFixWidthSizer(x, y);
+        this.constructFixWidthSizer(x, y, width, height);
         this.constructScrollablePanel(x, y, width, height);
 
 
@@ -65,12 +66,13 @@ export default class GenericContractReader extends Tabs {
 
         console.log(viewFunctions);
         for (let i = 0; i < viewFunctions.length; i++) {
-            let containerHeight = 75;
-            let containerWidth = width - 100;
+            let containerHeight = 250;
+            let containerWidth = width - 130;
             let containerX = (config.width / 2);
             let containerY = (config.height / 2) + (25 + 25 / 2);
 
-            let container = new ContainerLite(scene, containerX, containerY, containerWidth, containerHeight);
+            /*let container = new ContainerLite(scene, containerX, containerY, containerWidth, containerHeight);*/
+
             let background = (scene.add as any).rexRoundRectangle({
                 x: containerX,
                 y: containerY,
@@ -80,13 +82,11 @@ export default class GenericContractReader extends Tabs {
                 color: 0x1F2937,
                 alpha: 1,
             }).setDepth(1);
-            let text = scene.add.text(containerX, containerY - 25, viewFunctions[i].name, {
-                fontSize: '20px',
-                fill: '#F34C0B',
-            }).setDepth(2).setOrigin(0.5, 0.5);
-
+            let container = new GenericFunctionReader(scene, containerX, containerY, containerWidth, containerHeight, viewFunctions[i]);
             container.add(background);
-            container.add(text);
+
+
+
             this.fixWidthSizer.add(container);
             this.fixWidthSizer.addNewLine();
             this.scrollablePanel.layout();
@@ -137,25 +137,45 @@ export default class GenericContractReader extends Tabs {
         this.scrollablePanel = this._rexUI.add.scrollablePanel({
             x: (config.width / 2),
             y: (config.height / 2) + (25 + 25 / 2),
-            width: width - 100,
-            height: height - 100,
+            width: width - 130,
+            height: height - 130,
             scrollMode: 0,
             background: (this._scene.add as any).rexRoundRectangle({
                 x: x,
                 y: y,
                 width: width,
                 height: height,
-                color: 0x111926,
+                color: 0x202020,
                 alpha: 1,
-                radius: 5,
+                radius: 15,
             }),
+            space: {
+                left: 15,
+                right: 15,
+                top: 15,
+                bottom: 15,
+            },
+            slider: {
+                track: {
+                    width: 10,
+                    color: 0x404040,
+                    radius: 10,
+                },
+                thumb: {
+                    width: 10,
+                    height: 50,
+                    radius: 10,
+                    color: 0x888888,
+                    alpha: 1,
+                },
+            },
             panel: {
                 child: this.fixWidthSizer,
             },
         }).layout();
     }
 
-    constructFixWidthSizer(x, y) {
+    constructFixWidthSizer(x, y, width, height) {
         this.fixWidthSizer = this._rexUI.add.fixWidthSizer({
             x: x,
             y: y,
@@ -167,6 +187,7 @@ export default class GenericContractReader extends Tabs {
                 item: 15,
                 line: 15,
             },
+            width: width - 130,
         }).layout();
     }
 }

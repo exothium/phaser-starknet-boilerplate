@@ -92,7 +92,7 @@ export default class DefaultButton extends Label {
     }
 
     handleClick(onClick) {
-        onClick && onClick();
+        onClick && this.enabled && onClick();
     }
 
     handleOver() {
