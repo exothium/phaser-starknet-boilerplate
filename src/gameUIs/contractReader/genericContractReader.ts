@@ -80,9 +80,9 @@ export default class GenericContractReader extends Tabs {
                 height: containerHeight,
                 radius: 5,
                 color: 0x1F2937,
-                alpha: 1,
+                alpha: 0,
             }).setDepth(1);
-            let container = new GenericFunctionReader(scene, containerX, containerY, containerWidth, containerHeight, viewFunctions[i]);
+            let container = new GenericFunctionReader(scene, containerX, containerY, containerWidth, viewFunctions[i], contract);
             container.add(background);
 
 
