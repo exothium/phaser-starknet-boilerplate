@@ -54,14 +54,20 @@ export default class GenericContractReader extends Tabs {
                 height: containerHeight,
                 radius: 5,
                 color: 0x1F2937,
-                }).setDepth(1);
+            }).setDepth(1);
             let text = scene.add.text(containerX, containerY - 25, viewFunctions[i].name, {
                 fontSize: '20px',
                 fill: '#9A6BCD',
             }).setDepth(2).setOrigin(0.5, 0.5);
-            text.add()
+
             container.add(background);
             container.add(text);
+            //create a mask between container and background from backgrounScene
+            container.setMask(scene.get('BACKGROUND_SCENE').background.createGeometryMask());
+
+
+
+
             fixWidthSizer.add(container);
             fixWidthSizer.addNewLine();
 
