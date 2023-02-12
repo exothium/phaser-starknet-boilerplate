@@ -14,7 +14,7 @@ export interface GenericFunctionReaderParams {
     width: number;
     contract: Contract;
     contractFunctionAbi: any;
-    unUpdateSize?: (size) => void;
+    onUpdateSize?: (width: number, height: number, x: number, y: number) => void;
 }
 
 
@@ -27,11 +27,12 @@ export default class GenericFunctionReader extends ContainerLite {
     private _padding: number = 10;
     private _functionIdentifierTag: TagText;
     private _functionInteractButton: DefaultButton;
-    private _particles : Phaser.GameObjects.Particles.ParticleEmitterManager;
-    private _particleEmitter : Phaser.GameObjects.Particles.ParticleEmitter;
+    private _particles: Phaser.GameObjects.Particles.ParticleEmitterManager;
+    private _particleEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
+    private _onUpdateSize: (width: number, height: number, x: number, y: number) => void;
 
-    constructor({scene, x, y, width, contract, contractFunctionAbi}: GenericFunctionReaderParams) {
-        let height = contractFunctionAbi.inputs.length > 0 ?  150 : 100;
+    constructor({scene, x, y, width, contract, contractFunctionAbi, onUpdateSize}: GenericFunctionReaderParams) {
+        let height = contractFunctionAbi.inputs.length > 0 ? 150 : 100;
         super(scene, x, y, width, height);
         this._scene = scene;
         this._contract = contract;
@@ -45,6 +46,7 @@ export default class GenericFunctionReader extends ContainerLite {
         this.constructText();
         this.constructFunctionInteractButton();
         this.constructParticles();
+        this._onUpdateSize = onUpdateSize;
 
         scene.add.existing(this);
     }
@@ -183,15 +185,16 @@ export default class GenericFunctionReader extends ContainerLite {
     }
 
     constructFunctionInteractButton() {
-        this.functionInteractButton = this._scene.add.existing(new DefaultButton(this._scene, 'Read', this.x, this.y - 30 + (this.height / 2) , 100, 'medium',
+        this.functionInteractButton = this._scene.add.existing(new DefaultButton(this._scene, 'Read', this.x, this.y - 30 + (this.height / 2), 100, 'medium',
             () => {
                 this.openLogger();
 
                 //this.particleEmitter.resume();
                 this.contract.call(this.contractFunctionAbi.name).then((value) => {
                     console.log(value);
+                    alert(value);
                 });
-        }));
+            }));
         this.add(this.functionInteractButton);
     }
 
@@ -202,16 +205,16 @@ export default class GenericFunctionReader extends ContainerLite {
 
         this.particleEmitter = this.particles.createEmitter({
             name: 'emitter',
-            frame: [ 'white' ],
-            speed: { min: -125, max: 25 },
+            frame: ['white'],
+            speed: {min: -125, max: 25},
             lifespan: 2500,
             quantity: 1,
-            scale: { min: 0, max: 0.025 },
-            alpha: { min: 1, max: 0 },
+            scale: {min: 0, max: 0.025},
+            alpha: {min: 1, max: 0},
             blendMode: 'ADD',
-            emitZone: { source: emitZone },
-            deathZone: { source: emitZone, type: 'on Leave' },
-            tint: [  0xffb75b, 0xffdead, 0x3eff87 ],
+            emitZone: {source: emitZone},
+            deathZone: {source: emitZone, type: 'on Leave'},
+            tint: [0xffb75b, 0xffdead, 0x3eff87],
             radial: true,
         }).pause();
         this.add(this.particles);
@@ -220,6 +223,7 @@ export default class GenericFunctionReader extends ContainerLite {
     openLogger() {
         this.setSize(this.width, this.height + 50);
         this.background.setSize(this.width, this.height + 50);
+        this._onUpdateSize(this.width, this.height + 50, this.x, this.y);
     }
 
     updateParentSize() {

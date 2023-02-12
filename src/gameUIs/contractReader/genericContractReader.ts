@@ -30,7 +30,7 @@ export default class GenericContractReader extends Tabs {
     private _writeFunctions: any;
     private _contract: Contract;
 
-    constructor({scene, x = 0, y = 0, width= 0, height= 0,padding = 0,contract}: GenericContractReaderParams) {
+    constructor({scene, x = 0, y = 0, width = 0, height = 0, padding = 0, contract}: GenericContractReaderParams) {
         super(scene, {
             x: x,
             y: y,
@@ -205,12 +205,34 @@ export default class GenericContractReader extends Tabs {
                 color: 0x1F2937,
                 alpha: 0,
             }).setDepth(1);
-            let container = new GenericFunctionReader({scene: this._scene, x: containerX, y: containerY, width: containerWidth, contract : this.contract, contractFunctionAbi : this.viewFunctions[i] });
+
+            let container = new GenericFunctionReader({
+                scene: this._scene,
+                x: containerX,
+                y: containerY,
+                width: containerWidth,
+                contract: this.contract,
+                contractFunctionAbi: this.viewFunctions[i],
+                onUpdateSize: (width, height , x, y) => {
+                    container.setSize(width, height);
+                    container.setDisplaySize(width, height);
+                    container.x = x;
+                    container.y = y;
+                    this.scrollablePanel.layout();
+                    this.fixWidthSizer.layout();
+
+                }
+            });
             container.add(background);
 
             this.fixWidthSizer.add(container);
             this.fixWidthSizer.addNewLine();
             this.scrollablePanel.layout();
         }
+    }
+
+    updateLayoutSize(width: number, height : number) {
+        this.scrollablePanel.layout();
+        this.fixWidthSizer.layout();
     }
 }
