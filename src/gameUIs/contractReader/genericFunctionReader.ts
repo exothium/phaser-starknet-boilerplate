@@ -4,10 +4,21 @@ import TagText from "phaser3-rex-plugins/plugins/gameobjects/tagtext/tagtext/Tag
 import DefaultButton from "../buttons/defaultButton";
 import {starknet} from "../../starknet/starknet";
 import {Contract} from "starknet";
+import {config} from "../../game";
+import GenericContractReader from "./genericContractReader";
+
+export interface GenericFunctionReaderParams {
+    scene: Phaser.Scene;
+    x: number;
+    y: number;
+    width: number;
+    contract: Contract;
+    contractFunctionAbi: any;
+    unUpdateSize?: (size) => void;
+}
 
 
 export default class GenericFunctionReader extends ContainerLite {
-
     private _scene: Phaser.Scene;
     private _background: any;
     private _text: Phaser.GameObjects.Text;
@@ -16,19 +27,24 @@ export default class GenericFunctionReader extends ContainerLite {
     private _padding: number = 10;
     private _functionIdentifierTag: TagText;
     private _functionInteractButton: DefaultButton;
+    private _particles : Phaser.GameObjects.Particles.ParticleEmitterManager;
+    private _particleEmitter : Phaser.GameObjects.Particles.ParticleEmitter;
 
-    constructor(scene, x: number = 0, y: number = 0, width: number = 0, contractFunctionAbi: any, contract : Contract) {
+    constructor({scene, x, y, width, contract, contractFunctionAbi}: GenericFunctionReaderParams) {
         let height = contractFunctionAbi.inputs.length > 0 ?  150 : 100;
         super(scene, x, y, width, height);
         this._scene = scene;
         this._contract = contract;
         this._contractFunctionAbi = contractFunctionAbi;
-
         this.height = height;
+        this.width = width;
+        this.x = x;
+        this.y = y;
 
         this.constructBackground();
         this.constructText();
         this.constructFunctionInteractButton();
+        this.constructParticles();
 
         scene.add.existing(this);
     }
@@ -87,6 +103,22 @@ export default class GenericFunctionReader extends ContainerLite {
 
     set functionInteractButton(value: DefaultButton) {
         this._functionInteractButton = value;
+    }
+
+    get particles(): Phaser.GameObjects.Particles.ParticleEmitterManager {
+        return this._particles;
+    }
+
+    set particles(value: Phaser.GameObjects.Particles.ParticleEmitterManager) {
+        this._particles = value;
+    }
+
+    get particleEmitter(): Phaser.GameObjects.Particles.ParticleEmitter {
+        return this._particleEmitter;
+    }
+
+    set particleEmitter(value: Phaser.GameObjects.Particles.ParticleEmitter) {
+        this._particleEmitter = value;
     }
 
 
@@ -153,10 +185,46 @@ export default class GenericFunctionReader extends ContainerLite {
     constructFunctionInteractButton() {
         this.functionInteractButton = this._scene.add.existing(new DefaultButton(this._scene, 'Read', this.x, this.y - 30 + (this.height / 2) , 100, 'medium',
             () => {
+                this.openLogger();
+
+                //this.particleEmitter.resume();
                 this.contract.call(this.contractFunctionAbi.name).then((value) => {
                     console.log(value);
                 });
         }));
         this.add(this.functionInteractButton);
     }
+
+    constructParticles() {
+        let emitZone = new Phaser.Geom.Rectangle(this.x - (this.width / 2), this.y - (this.height / 2), this.width, this.height);
+
+        this.particles = this._scene.add.particles('flares').setDepth(5);
+
+        this.particleEmitter = this.particles.createEmitter({
+            name: 'emitter',
+            frame: [ 'white' ],
+            speed: { min: -125, max: 25 },
+            lifespan: 2500,
+            quantity: 1,
+            scale: { min: 0, max: 0.025 },
+            alpha: { min: 1, max: 0 },
+            blendMode: 'ADD',
+            emitZone: { source: emitZone },
+            deathZone: { source: emitZone, type: 'on Leave' },
+            tint: [  0xffb75b, 0xffdead, 0x3eff87 ],
+            radial: true,
+        }).pause();
+        this.add(this.particles);
+    }
+
+    openLogger() {
+        this.setSize(this.width, this.height + 50);
+        this.background.setSize(this.width, this.height + 50);
+    }
+
+    updateParentSize() {
+
+    }
+
+
 }

@@ -9,6 +9,16 @@ import {getViewFunctionsFromAbi, getWriteFunctionsFromAbi} from "../../utils/uti
 import ContainerLite from "phaser3-rex-plugins/plugins/gameobjects/container/containerlite/ContainerLite";
 import GenericFunctionReader from "./genericFunctionReader";
 
+export interface GenericContractReaderParams {
+    scene: any;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    padding?: number;
+    contract: Contract;
+}
+
 export default class GenericContractReader extends Tabs {
     private _scene: Phaser.Scene;
     private _rexUI: RexUIPlugin;
@@ -18,8 +28,9 @@ export default class GenericContractReader extends Tabs {
     private _fixWidthSizer: UIPlugins.FixWidthSizer;
     private _viewFunctions: any;
     private _writeFunctions: any;
+    private _contract: Contract;
 
-    constructor(scene, x: number = 0, y: number = 0, width: number = 0, height: number = 0, padding: number = 0, contract: Contract) {
+    constructor({scene, x = 0, y = 0, width= 0, height= 0,padding = 0,contract}: GenericContractReaderParams) {
         super(scene, {
             x: x,
             y: y,
@@ -44,9 +55,12 @@ export default class GenericContractReader extends Tabs {
                 bottom: 10,
             },
         });
-
         this._scene = scene;
         this._rexUI = scene.rexUI;
+        this._contract = contract;
+        this.width = width;
+        this.viewFunctions = getViewFunctionsFromAbi(contract.abi);
+        this.writeFunctions = getWriteFunctionsFromAbi(contract.abi);
 
         this.readButton = new DefaultButton(scene, 'Read', (config.width / 2 - 105), (config.height * padding + 50), 200, 'medium');
         this.writeButton = new DefaultButton(scene, 'Write', (config.width / 2 + 105), (config.height * padding + 50), 200, 'medium');
@@ -55,48 +69,7 @@ export default class GenericContractReader extends Tabs {
 
         this.constructFixWidthSizer(x, y, width, height);
         this.constructScrollablePanel(x, y, width, height);
-
-
-        let viewFunctions = getViewFunctionsFromAbi(contract.abi);
-        let writeFunctions = getWriteFunctionsFromAbi(contract.abi);
-
-        /*contract.name(starknet.selectedAddress).then((name) => {
-          console.log(name);
-        });*/
-
-        console.log(viewFunctions);
-        for (let i = 0; i < viewFunctions.length; i++) {
-            let containerHeight = 250;
-            let containerWidth = width - 130;
-            let containerX = (config.width / 2);
-            let containerY = (config.height / 2) + (25 + 25 / 2);
-
-            /*let container = new ContainerLite(scene, containerX, containerY, containerWidth, containerHeight);*/
-
-            let background = (scene.add as any).rexRoundRectangle({
-                x: containerX,
-                y: containerY,
-                width: containerWidth,
-                height: containerHeight,
-                radius: 5,
-                color: 0x1F2937,
-                alpha: 0,
-            }).setDepth(1);
-            let container = new GenericFunctionReader(scene, containerX, containerY, containerWidth, viewFunctions[i], contract);
-            container.add(background);
-
-
-
-            this.fixWidthSizer.add(container);
-            this.fixWidthSizer.addNewLine();
-            this.scrollablePanel.layout();
-
-            /*contract[viewFunctions[i].name](starknet.selectedAddress).then((value) => {
-                console.log(value);
-            });*/
-        }
-
-
+        this.constructFunctionReaderContainers();
 
         scene.add.existing(this);
     }
@@ -133,6 +106,30 @@ export default class GenericContractReader extends Tabs {
         this._fixWidthSizer = value;
     }
 
+    get writeFunctions(): any {
+        return this._writeFunctions;
+    }
+
+    set writeFunctions(value: any) {
+        this._writeFunctions = value;
+    }
+
+    get viewFunctions(): any {
+        return this._viewFunctions;
+    }
+
+    set viewFunctions(value: any) {
+        this._viewFunctions = value;
+    }
+
+    get contract(): Contract {
+        return this._contract;
+    }
+
+    set contract(value: Contract) {
+        this._contract = value;
+    }
+
     constructScrollablePanel(x: number = 0, y: number = 0, width: number = 0, height: number = 0) {
         this.scrollablePanel = this._rexUI.add.scrollablePanel({
             x: (config.width / 2),
@@ -155,6 +152,7 @@ export default class GenericContractReader extends Tabs {
                 top: 15,
                 bottom: 15,
             },
+            mouseWheelScroller: true,
             slider: {
                 track: {
                     width: 10,
@@ -163,7 +161,7 @@ export default class GenericContractReader extends Tabs {
                 },
                 thumb: {
                     width: 10,
-                    height: 50,
+                    height: 75,
                     radius: 10,
                     color: 0x888888,
                     alpha: 1,
@@ -189,5 +187,30 @@ export default class GenericContractReader extends Tabs {
             },
             width: width - 130,
         }).layout();
+    }
+
+    constructFunctionReaderContainers() {
+        for (let i = 0; i < this.viewFunctions.length; i++) {
+            let containerHeight = 250;
+            let containerWidth = this.width - 130;
+            let containerX = (config.width / 2);
+            let containerY = (config.height / 2) + (25 + 25 / 2);
+
+            let background = (this._scene.add as any).rexRoundRectangle({
+                x: containerX,
+                y: containerY,
+                width: containerWidth,
+                height: containerHeight,
+                radius: 5,
+                color: 0x1F2937,
+                alpha: 0,
+            }).setDepth(1);
+            let container = new GenericFunctionReader({scene: this._scene, x: containerX, y: containerY, width: containerWidth, contract : this.contract, contractFunctionAbi : this.viewFunctions[i] });
+            container.add(background);
+
+            this.fixWidthSizer.add(container);
+            this.fixWidthSizer.addNewLine();
+            this.scrollablePanel.layout();
+        }
     }
 }

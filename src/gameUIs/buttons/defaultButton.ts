@@ -133,7 +133,7 @@ export default class DefaultButton extends Label {
     }
 
     constructEvents() {
-        this.background.setInteractive().setDepth(1)
+        this.background.setInteractive({ cursor: 'pointer' }).setDepth(1)
             .on('pointerdown', () => {
                 this.handleClick(this._onClick || null)
             })

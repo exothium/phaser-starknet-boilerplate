@@ -4,9 +4,9 @@ import erc20Mintable_abi from "../../starknet/contracts/abis/erc20Mintable_abi.j
 import {starknet} from "../../starknet/starknet";
 import {Contract} from "starknet";
 import GenericContractReadWriteTabs from "../../gameUIs/contractReader/genericContractReader";
+import {Scene} from "phaser";
 
 export default class Erc20Scene extends Phaser.Scene {
-
     static readonly SCENE_KEY = 'ERC20_SCENE';
     rexUI: RexUIPlugin;
     private _paddingPercentage = 0.1;
@@ -40,6 +40,6 @@ export default class Erc20Scene extends Phaser.Scene {
     }
 
     renderPanel() {
-        new GenericContractReadWriteTabs(this, config.width / 2, config.height / 2, this._panelWidth, this._panelHeight, this._paddingPercentage, this.erc20Contract);
+        new GenericContractReadWriteTabs({scene: this, x: config.width / 2, y: config.height / 2, width: this._panelWidth, height: this._panelHeight, padding: this._paddingPercentage,  contract: this.erc20Contract});
     }
 }
