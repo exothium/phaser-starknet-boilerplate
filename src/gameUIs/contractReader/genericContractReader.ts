@@ -20,9 +20,9 @@ export interface GenericContractReaderParams {
 }
 
 export default class GenericContractReader extends Tabs {
-    private _scene: Phaser.Scene;
+    private _scene: any;
     private _rexUI: RexUIPlugin;
-    private _scrollablePanel: ScrollablePanel;
+    private _readScrollablePanel: ScrollablePanel;
     private _readButton: DefaultButton;
     private _writeButton: DefaultButton;
     private _fixWidthSizer: UIPlugins.FixWidthSizer;
@@ -62,8 +62,13 @@ export default class GenericContractReader extends Tabs {
         this.viewFunctions = getViewFunctionsFromAbi(contract.abi);
         this.writeFunctions = getWriteFunctionsFromAbi(contract.abi);
 
-        this.readButton = new DefaultButton(scene, 'Read', (config.width / 2 - 105), (config.height * padding + 50), 200, 'medium');
-        this.writeButton = new DefaultButton(scene, 'Write', (config.width / 2 + 105), (config.height * padding + 50), 200, 'medium');
+        this.readButton = new DefaultButton(scene, 'Read', (config.width / 2 - 105), (config.height * padding + 50), 200, 'medium',  () => {
+            this.readScrollablePanel.hide();
+        });
+        this.writeButton = new DefaultButton(scene, 'Write', (config.width / 2 + 105), (config.height * padding + 50), 200, 'medium',  () => {
+            console.log(this._scene);
+            this._scene.sys.game.scene.switch(this._scene.scene.key,'MAIN_SCENE');
+        });
         this.addTopButton(this.readButton);
         this.addTopButton(this.writeButton);
 
@@ -74,12 +79,12 @@ export default class GenericContractReader extends Tabs {
         scene.add.existing(this);
     }
 
-    get scrollablePanel(): UIPlugins.ScrollablePanel {
-        return this._scrollablePanel;
+    get readScrollablePanel(): UIPlugins.ScrollablePanel {
+        return this._readScrollablePanel;
     }
 
-    set scrollablePanel(value: UIPlugins.ScrollablePanel) {
-        this._scrollablePanel = value;
+    set readScrollablePanel(value: UIPlugins.ScrollablePanel) {
+        this._readScrollablePanel = value;
     }
 
     get writeButton(): DefaultButton {
@@ -131,7 +136,7 @@ export default class GenericContractReader extends Tabs {
     }
 
     constructScrollablePanel(x: number = 0, y: number = 0, width: number = 0, height: number = 0) {
-        this.scrollablePanel = this._rexUI.add.scrollablePanel({
+        this.readScrollablePanel = this._rexUI.add.scrollablePanel({
             x: (config.width / 2),
             y: (config.height / 2) + (25 + 25 / 2),
             width: width - 130,
@@ -218,21 +223,23 @@ export default class GenericContractReader extends Tabs {
                     container.setDisplaySize(width, height);
                     container.x = x;
                     container.y = y;
-                    this.scrollablePanel.layout();
+                    this.readScrollablePanel.layout();
                     this.fixWidthSizer.layout();
 
                 }
             });
             container.add(background);
 
+
             this.fixWidthSizer.add(container);
             this.fixWidthSizer.addNewLine();
-            this.scrollablePanel.layout();
+            this.readScrollablePanel.layout();
         }
+
     }
 
     updateLayoutSize(width: number, height : number) {
-        this.scrollablePanel.layout();
+        this.readScrollablePanel.layout();
         this.fixWidthSizer.layout();
     }
 }

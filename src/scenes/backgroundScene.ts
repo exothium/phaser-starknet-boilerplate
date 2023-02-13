@@ -29,9 +29,7 @@ export default class BackgroundScene extends Phaser.Scene {
     }
 
     update() {
-        this.input.on('pointermove', function (pointer) {
-            this.particles.setPosition(pointer.x, pointer.y);
-        }, this);
+
     }
 
 }
