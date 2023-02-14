@@ -29,6 +29,7 @@ export default class GenericContractReader extends Tabs {
     private _viewFunctions: any;
     private _writeFunctions: any;
     private _contract: Contract;
+    private _contractAddressText: Text;
 
     constructor({scene, x = 0, y = 0, width = 0, height = 0, padding = 0, contract}: GenericContractReaderParams) {
         super(scene, {
@@ -62,16 +63,17 @@ export default class GenericContractReader extends Tabs {
         this.viewFunctions = getViewFunctionsFromAbi(contract.abi);
         this.writeFunctions = getWriteFunctionsFromAbi(contract.abi);
 
-        this.readButton = new DefaultButton(scene, 'Read', (config.width / 2 - 105), (config.height * padding + 50), 200, 'medium',  () => {
+        this.readButton = new DefaultButton(scene, 'Read', (config.width / 2 - 105), (config.height * padding + 50), 200, 'medium', () => {
             this.readScrollablePanel.hide();
         });
-        this.writeButton = new DefaultButton(scene, 'Write', (config.width / 2 + 105), (config.height * padding + 50), 200, 'medium',  () => {
+        this.writeButton = new DefaultButton(scene, 'Write', (config.width / 2 + 105), (config.height * padding + 50), 200, 'medium', () => {
             console.log(this._scene);
-            this._scene.sys.game.scene.switch(this._scene.scene.key,'MAIN_SCENE');
+            this._scene.sys.game.scene.switch(this._scene.scene.key, 'MAIN_SCENE');
         });
         this.addTopButton(this.readButton);
         this.addTopButton(this.writeButton);
 
+        this.constructContractAddressText(x, y, width, height);
         this.constructFixWidthSizer(x, y, width, height);
         this.constructScrollablePanel(x, y, width, height);
         this.constructFunctionReaderContainers();
@@ -133,6 +135,28 @@ export default class GenericContractReader extends Tabs {
 
     set contract(value: Contract) {
         this._contract = value;
+    }
+
+    get contractAddressText(): Text {
+        return this._contractAddressText;
+    }
+
+    set contractAddressText(value: Text) {
+        this._contractAddressText = value;
+    }
+
+    constructContractAddressText(x: number = 0, y: number = 0, width: number = 0, height: number = 0) {
+        this.contractAddressText = this._scene.add.text(
+            x - (width / 2) + 25,
+            y - (height / 2) + 25,
+            ('CA: ' + this.contract.address),
+            {
+                fontFamily: 'MRegular',
+                fontSize: 15,
+                color: '#ffffff',
+                align: 'center',
+            },
+        );
     }
 
     constructScrollablePanel(x: number = 0, y: number = 0, width: number = 0, height: number = 0) {
@@ -218,14 +242,9 @@ export default class GenericContractReader extends Tabs {
                 width: containerWidth,
                 contract: this.contract,
                 contractFunctionAbi: this.viewFunctions[i],
-                onUpdateSize: (width, height , x, y) => {
-                    container.setSize(width, height);
-                    container.setDisplaySize(width, height);
-                    container.x = x;
-                    container.y = y;
-                    this.readScrollablePanel.layout();
+                onUpdateSize: () => {
                     this.fixWidthSizer.layout();
-
+                    this.readScrollablePanel.layout();
                 }
             });
             container.add(background);
@@ -238,7 +257,7 @@ export default class GenericContractReader extends Tabs {
 
     }
 
-    updateLayoutSize(width: number, height : number) {
+    updateLayoutSize(width: number, height: number) {
         this.readScrollablePanel.layout();
         this.fixWidthSizer.layout();
     }

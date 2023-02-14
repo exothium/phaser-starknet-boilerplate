@@ -14,7 +14,7 @@ export interface GenericFunctionReaderParams {
     width: number;
     contract: Contract;
     contractFunctionAbi: any;
-    onUpdateSize?: (width: number, height: number, x: number, y: number) => void;
+    onUpdateSize?: () => void;
 }
 
 
@@ -29,7 +29,7 @@ export default class GenericFunctionReader extends ContainerLite {
     private _functionInteractButton: DefaultButton;
     private _particles: Phaser.GameObjects.Particles.ParticleEmitterManager;
     private _particleEmitter: Phaser.GameObjects.Particles.ParticleEmitter;
-    private _onUpdateSize: (width: number, height: number, x: number, y: number) => void;
+    private _onUpdateSize: () => void;
 
     constructor({scene, x, y, width, contract, contractFunctionAbi, onUpdateSize}: GenericFunctionReaderParams) {
         let height = contractFunctionAbi.inputs.length > 0 ? 150 : 100;
@@ -37,10 +37,6 @@ export default class GenericFunctionReader extends ContainerLite {
         this._scene = scene;
         this._contract = contract;
         this._contractFunctionAbi = contractFunctionAbi;
-        this.height = height;
-        this.width = width;
-        this.x = x;
-        this.y = y;
 
         this.constructBackground();
         this.constructText();
@@ -192,7 +188,6 @@ export default class GenericFunctionReader extends ContainerLite {
                 //this.particleEmitter.resume();
                 this.contract.call(this.contractFunctionAbi.name).then((value) => {
                     console.log(value);
-                    alert(value);
                 });
             }));
         this.add(this.functionInteractButton);
@@ -221,14 +216,16 @@ export default class GenericFunctionReader extends ContainerLite {
     }
 
     openLogger() {
-        this.setSize(this.width, this.height + 50);
-        this.background.setSize(this.width, this.height + 50);
-        this._onUpdateSize(this.width, this.height + 50, this.x, this.y);
+        let height = 50;
+        let newHeight = this.height + 50;
+
+        this.setSize(this.width, newHeight, true);
+        this.background.setSize(this.width, newHeight, false);
+        this.setChildPosition(this.functionIdentifierTag,this.x + this.padding - (this.width / 2), this.y + this.padding - (newHeight / 2));
+        this.setChildPosition(this.functionInteractButton, this.functionInteractButton.x, this.functionInteractButton.y - height / 2);
+        this._onUpdateSize();
+
+
     }
-
-    updateParentSize() {
-
-    }
-
 
 }
