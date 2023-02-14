@@ -7,8 +7,9 @@
     "esModuleInterop": true,
     "moduleResolution": "NodeNext",
     "declaration": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "sourceMap": true,
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules", "**/*.spec.ts"]
+  "exclude": ["node_modules", "**/*.spec.ts"],
 }

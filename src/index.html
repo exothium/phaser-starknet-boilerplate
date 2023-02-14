@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <style media='screen'>
+    @font-face {
+      font-family: MRegular;
+      src: url('./assets/fonts/PPNeueMontreal-Book.otf');
+    }
+    @font-face {
+      font-family: MBold;
+      src: url('./assets/fonts/PPNeueMontreal-Bold.otf');
+    }
+  </style>
   <meta charset="UTF-8" />
   <meta
           name="viewport"
@@ -10,30 +20,23 @@
 
   <meta name="theme-color" content="#000000" />
 
-  <link rel="manifest" href="./manifest.json" />
-
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="application-name" content="<%= htmlWebpackPlugin.options.gameName %>" />
   <meta name="apple-mobile-web-app-title" content="<%= htmlWebpackPlugin.options.gameName %>" />
   <meta name="msapplication-starturl" content="./" />
-  <script type="text/javascript" src="starknet-web3/starknet.ts"></script>
+  <script type="text/javascript" src="starknet/starknet.ts"></script>
 
   <title><%= htmlWebpackPlugin.options.gameName %></title>
 
   <noscript>Please enable javascript to continue using this application.</noscript>
-
-
-  <!-- installs the serviceWorker -->
-  <!-- <script>
-    if ('serviceWorker' in navigator) {
-      window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js')
-      })
-    }
-  </script> -->
+  <link rel="preload" as="font" href="assets/fonts/PPNeueMontreal-Bold.otf" type="font/otf">
+  <link rel="preload" as="font" href="assets/fonts/PPNeueMontreal-Book.otf" type="font/otf">
 </head>
-<body style="display: flex; justify-content: center; align-items: center; margin: 0px;">
+<body style="display: flex; justify-content: center; align-items: center; margin: 0;">
 <div id="phaser-game"></div>
+<div style="font-family:MRegular,serif; font-size: 30px; position:absolute; left:1px; visibility: hidden;">.</div>
+<div style="font-family:MBold,serif; font-size: 30px; position:absolute; left:1px; visibility: hidden;">.</div>
+
 </body>
 </html>
