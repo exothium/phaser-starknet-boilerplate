@@ -35,7 +35,7 @@ On the other hand, if a developer is looking to build a game that requires a lot
 
 | The entire interface:                      | Deploy contracts using HardHat Plugin |
 |------------------------------------------------|---------------------------------------|
-| ![plot](https://github.com/exothium/phaser-starknet-boilerplate//blob/8eaf4817575a377255a72bd2d06a2a88f567175f/src/assets/demos/phaser-starknet.gif?raw=true) | Coming Soon                           |
+| ![plot](https://github.com/exothium/phaser-starknet-boilerplate/blob/23254427c40be1723b5805f2b1092bdcfe13374c/src/assets/demos/phaser-starknet.gif?raw=true) | Coming Soon                           |
 
 ---
 
